@@ -1,6 +1,9 @@
 class Song < ApplicationRecord
 
-  validates :title, presence: true, uniqueness: true
+  validates :title, uniqueness: {
+    scope: %i[release_year artist_name], #sets the scope of validation
+    message: 'cannot be repeated by the same artist in the same year'
+  }
   validates :released, inclusion: {in: [true, false]}
   validates :release_year, presence: true, if: :released?, numericality: {only_integer: true, less_than_or_equal_to: Date.today.year}
   validates :artist_name, presence: true
@@ -10,11 +13,6 @@ class Song < ApplicationRecord
   def released?
     released
   end
-  #
-  # def same_release_year
-  #   if @song=Song.find_by(title: params[:title])
-  #     @song.release_year==params[:release_year]
-  #   end
-  # end
+
 
 end
